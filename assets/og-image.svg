@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <!-- background -->
+  <rect width="1200" height="630" fill="#f4f1ea"/>
+  <!-- scanline texture -->
+  <g opacity="0.05">
+    <rect width="1200" height="630" fill="url(#lines)"/>
+  </g>
+  <defs>
+    <pattern id="lines" width="1" height="3" patternUnits="userSpaceOnUse">
+      <rect width="1" height="1" fill="#000"/>
+    </pattern>
+  </defs>
+
+  <!-- left brand bar -->
+  <rect x="0" y="0" width="16" height="630" fill="#d6202b"/>
+
+  <!-- kicker -->
+  <text x="80" y="96" font-family="Courier New, monospace" font-size="26"
+        letter-spacing="6" fill="#d6202b">A NOTE ON UNETHICAL WORK</text>
+
+  <!-- headline -->
+  <g font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="bold"
+     font-size="104" letter-spacing="-2">
+    <text x="78" y="248" fill="#0a0a0a">EMPLOYERS MAKE</text>
+    <text x="78" y="356" fill="#0a0a0a"><tspan fill="#d6202b">PROFIT</tspan> FROM YOU,</text>
+    <text x="78" y="464" fill="#0a0a0a">AT ANY <tspan fill="#d6202b">COST.</tspan></text>
+  </g>
+
+  <!-- divider -->
+  <rect x="80" y="518" width="1040" height="2" fill="#cfc9bb"/>
+
+  <!-- subline -->
+  <text x="80" y="566" font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
+        font-size="30" fill="#0a0a0a">The profit is theirs. The accountability is yours.</text>
+
+  <!-- corner tag -->
+  <text x="80" y="602" font-family="Courier New, monospace" font-size="20"
+        letter-spacing="3" fill="#6b6459">// a work of dark satire</text>
+</svg>

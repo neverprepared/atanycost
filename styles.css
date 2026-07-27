@@ -89,10 +89,16 @@ body {
 }
 .hero__title {
   font-weight: 800;
-  font-size: clamp(2.6rem, 9.5vw, 9rem);
+  font-size: clamp(2.1rem, 9.5vw, 9rem);
   line-height: 0.95;
   letter-spacing: -0.02em;
   text-transform: uppercase;
+  overflow-wrap: break-word;
+}
+/* narrow phones: the longest line ("WE MAKE PROFIT") overflows at 9.5vw,
+   so shrink it just for small screens without touching desktop impact */
+@media (max-width: 480px) {
+  .hero__title { font-size: clamp(1.75rem, 7.4vw, 2.4rem); }
 }
 .hero__title .line { display: block; }
 .hl { color: var(--blood); }
@@ -440,6 +446,26 @@ body {
 }
 .section-label.light { color: var(--bone-dim); border-color: rgba(244,241,234,0.2); }
 
+/* section deep-link affordance (JS-injected) */
+.section-label .anchor-copy {
+  font-family: var(--mono);
+  font-size: 0.9em;
+  letter-spacing: 0;
+  margin-left: 0.6em;
+  padding: 0 0.4em;
+  line-height: 1.4;
+  vertical-align: middle;
+  color: inherit;
+  background: transparent;
+  border: 1px solid currentColor;
+  cursor: pointer;
+  opacity: 0.3;
+  transition: opacity 0.2s, background 0.2s, color 0.2s, border-color 0.2s;
+}
+.section-label:hover .anchor-copy,
+.anchor-copy:focus-visible { opacity: 1; }
+.anchor-copy:hover { background: var(--blood); color: var(--bone); border-color: var(--blood); }
+
 /* ---------- ledger ---------- */
 .ledger { padding: 12vh 6vw; }
 .ledger__grid {
@@ -646,6 +672,22 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.2rem;
 }
+/* card + its copy control, stacked (JS wraps each .flip) */
+.flip-wrap { display: flex; flex-direction: column; gap: 0.6rem; }
+.flip__copy {
+  align-self: flex-start;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ash);
+  background: transparent;
+  border: 1px dashed var(--bone-dim);
+  padding: 0.5rem 0.8rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.flip__copy:hover { background: var(--ink); color: var(--bone); border-color: var(--ink); }
 .flip {
   font: inherit;
   text-align: left;
@@ -1164,6 +1206,12 @@ body {
   font-size: 0.8rem;
   letter-spacing: 0.1em;
   color: var(--ash);
+}
+.foot__share {
+  margin-top: 1rem;
+  max-width: 60ch;
+  color: var(--ink);
+  line-height: 1.6;
 }
 
 /* ---------- reduced motion ---------- */

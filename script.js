@@ -344,6 +344,48 @@
     });
   }
 
+  /* ---- shared clipboard helper + canonical URL ----
+     SITE_URL reads the <link rel="canonical"> so that when the custom
+     domain lands, updating the canonical href is the ONLY change needed;
+     every share affordance follows automatically. */
+  const canonical = document.querySelector('link[rel="canonical"]');
+  const SITE_URL =
+    (canonical && canonical.href) || location.origin + location.pathname;
+
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    // Fallback for insecure contexts / no Clipboard API
+    return new Promise((resolve, reject) => {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "absolute";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      let ok = false;
+      try {
+        ok = document.execCommand("copy");
+      } catch (e) {
+        ok = false;
+      }
+      document.body.removeChild(ta);
+      ok ? resolve() : reject(new Error("copy failed"));
+    });
+  }
+
+  // flash a temporary label on a button, then restore it
+  function flash(el, msg, ms) {
+    const prev = el.dataset.label || el.textContent;
+    el.dataset.label = prev;
+    el.textContent = msg;
+    window.setTimeout(() => {
+      el.textContent = el.dataset.label;
+    }, ms || 1800);
+  }
+
   /* ---- copy the thesis ---- */
   const copyBtn = document.getElementById("copyBtn");
   const copied = document.getElementById("copied");
@@ -357,31 +399,71 @@
     "(Your labor is not our property, and our recklessness is not your debt, " +
     "we're just hoping you won't notice.)";
 
-  if (copyBtn) {
-    copyBtn.addEventListener("click", async () => {
-      try {
-        await navigator.clipboard.writeText(THESIS);
-        copied.textContent = "// mission statement stolen. use it against them.";
-      } catch (err) {
-        // Fallback for insecure contexts / no clipboard API
-        const ta = document.createElement("textarea");
-        ta.value = THESIS;
-        ta.setAttribute("readonly", "");
-        ta.style.position = "absolute";
-        ta.style.left = "-9999px";
-        document.body.appendChild(ta);
-        ta.select();
-        try {
-          document.execCommand("copy");
+  if (copyBtn && copied) {
+    copyBtn.addEventListener("click", () => {
+      copyText(THESIS + "\n\n" + SITE_URL)
+        .then(() => {
           copied.textContent = "// mission statement stolen. use it against them.";
-        } catch (e) {
+        })
+        .catch(() => {
           copied.textContent = "// copy failed. Select and copy manually.";
-        }
-        document.body.removeChild(ta);
-      }
-      window.setTimeout(() => {
-        copied.textContent = "";
-      }, 4000);
+        })
+        .then(() => {
+          window.setTimeout(() => {
+            copied.textContent = "";
+          }, 4000);
+        });
     });
   }
+
+  /* ---- per-line share: copy each flip card's lie + tell + URL ----
+     The .flip is a <button>, so a copy control can't nest inside it.
+     Wrap each card and place the control beneath it instead. */
+  document.querySelectorAll("#lieCards .flip").forEach((card) => {
+    const lie = card.querySelector(".flip__lie");
+    const tell = card.querySelector(".flip__truth");
+    if (!lie || !tell) return;
+
+    const wrap = document.createElement("div");
+    wrap.className = "flip-wrap";
+    card.parentNode.insertBefore(wrap, card);
+    wrap.appendChild(card);
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "flip__copy";
+    btn.textContent = "copy this lie + tell";
+    wrap.appendChild(btn);
+
+    btn.addEventListener("click", () => {
+      const payload =
+        lie.textContent.trim() +
+        "\n\nThe tell: " +
+        tell.textContent.trim() +
+        "\n\n" +
+        SITE_URL;
+      copyText(payload)
+        .then(() => flash(btn, "copied ✓"))
+        .catch(() => flash(btn, "copy failed"));
+    });
+  });
+
+  /* ---- section deep-links: copy a link straight to any titled section ---- */
+  document.querySelectorAll(".section-label").forEach((label) => {
+    const section = label.closest("section");
+    if (!section || !section.id) return;
+    const link = document.createElement("button");
+    link.type = "button";
+    link.className = "anchor-copy";
+    link.setAttribute("aria-label", "Copy a link to this section");
+    link.title = "Copy link to this section";
+    link.textContent = "#";
+    label.appendChild(link);
+    link.addEventListener("click", () => {
+      const base = SITE_URL.split("#")[0].replace(/\/$/, "");
+      copyText(base + "/#" + section.id)
+        .then(() => flash(link, "link copied ✓"))
+        .catch(() => flash(link, "failed"));
+    });
+  });
 })();

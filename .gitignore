@@ -1,0 +1,6 @@
+# Launch/marketing kit stays LOCAL — do not publish the strategy to a public,
+# attributable repo. Keep these files on disk for your own use only.
+kit/
+
+# OS / editor noise
+.DS_Store
