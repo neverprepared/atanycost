@@ -13,16 +13,18 @@ Live at <https://neverprepared.github.io/atanycost/> (GitHub Pages).
 
 ## Architecture
 
-Three files at the repo root, loaded directly by the browser — no bundler, no
-modules, no `package.json`:
+Everything lives at the repo root and is loaded directly by the browser — no
+bundler, no modules, no `package.json`:
 
 | File | Role |
 | --- | --- |
-| `index.html` | All content and structure (~680 lines). Ticker, hero, and 15 `<section>` blocks, each with a stable `id` used for deep links and JS hooks. |
+| `index.html` | All content and structure (~680 lines). Ticker, hero (`#top`), and 15 `<section>` blocks — `#winners`, `#thesis`, `#market`, `#river`, `#ledger`, `#racket`, `#comfort-sec`, `#curriculum`, `#counter`, `#accountable`, `#farewell`, `#exits`, `#inherit`, `#serious`, `#closing` — each id a stable deep-link target and JS hook. |
 | `styles.css` | All styling (~1200 lines). Brutalist bone / ink / blood-red palette. |
 | `script.js` | All behaviour (~470 lines). One IIFE in `"use strict"`, no exports. |
 | `assets/og-image.png`, `assets/og-image.svg` | 1200×630 Open Graph share card. |
 | `.nojekyll` | Disables Jekyll processing on GitHub Pages. |
+| `README.md` | Public-facing description of the site and its stack. |
+| `.github/workflows/deploy.yml` | The only workflow: Pages deploy on push to `main`. |
 
 ### `script.js` structure
 
@@ -38,10 +40,12 @@ sections can be removed from `index.html` without breaking the script. Blocks:
   array on a 4.2s interval.
 - **Market share** (`#market`) — consumes `#seg1`–`#seg4` into `#segUs` on
   scroll-in, stepping `#marketFoot` through the `FOOTS` strings.
-- **Comfort ceiling** (`#comfort`) — a security meter that asymptotes toward 86%
-  and is periodically knocked back down by a random `EVENTS` string.
+- **Comfort ceiling** (`#comfort`, the inner div of section `#comfort-sec`) — a
+  security meter that asymptotes toward 86% and is periodically knocked back
+  down by an `EVENTS` string every 4.2s.
 - **The river** (`#riverViz`) — dams on scroll-in, then meters a dollar toll.
-- **Perceived-value decay** (`#decay`) — animates a bar from 100% to 4%.
+- **Perceived-value decay** (`#decay`, the inner div of section `#exits`) —
+  animates a bar from 100% to 4% over 3.2s.
 - **Curriculum flip cards** (`#lieCards .flip`) — click toggles `.is-flipped`
   and keeps `aria-pressed` in sync.
 - **P.S. toggle** (`#psToggle` / `#psNote`).
